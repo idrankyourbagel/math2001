@@ -1,6 +1,7 @@
 import Mathlib.Data.Real.Basic
 import Library.Basic
 import Library.Theory.ModEq.Defs
+import Library.Tactic.ModEq
 
 math2001_init
 
@@ -112,6 +113,15 @@ example : ∃! r : ℤ, 0 ≤ r ∧ r < 3 ∧ 11 ≡ r [ZMOD 3] := by
     . constructor
       . numbers
       . calc
-          (11 : ℤ) = 2 + 3 * 3 := by numbers
+          11 = 2 + 3 * 3 := by numbers
           _ ≡ 2 [ZMOD 3] := by extra
   . intro y hy
+    obtain ⟨h1, h2, h3⟩ := hy
+    interval_cases y
+    . apply Int.not_dvd_of_exists_lt_and_lt at h3
+      exact h3.elim
+      use 3; constructor <;> numbers
+    . apply Int.not_dvd_of_exists_lt_and_lt at h3
+      exact h3.elim
+      use 3; constructor <;> numbers
+    . numbers
