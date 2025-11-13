@@ -1,10 +1,11 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.Nat.Factorial.Basic
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Nat.Cast.Basic
 import Init.Data.Nat
 import Library.Basic
 import Library.Tactic.ModEq
+
+
 
 lemma h1 {n : ℕ} : n ≤ 2 * n := calc
   n ≤ n + n := by extra
@@ -17,11 +18,6 @@ lemma h2 {n : ℕ} : 2 * n - n = n := calc
 lemma h3 {n : ℕ} : 2 * (n + 1) = 2 * n + 2 := by ring
 
 
-
-def Nat.qify : ℕ → ℚ
-  | n => (n : ℚ)
-
-lemma Nat.eq_qify {n : ℕ} : n = n.qify := by dsimp [Nat.qify]
 
 theorem a3 {n : ℕ} : ((2 * n).choose n) ^ 2 * (3 * n + 1) ≤ 4 ^ (2 * n) := by
   simple_induction n with k IH
