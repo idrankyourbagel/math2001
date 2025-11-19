@@ -119,9 +119,9 @@ example : ∃! r : ℤ, 0 ≤ r ∧ r < 3 ∧ 11 ≡ r [ZMOD 3] := by
     obtain ⟨h1, h2, h3⟩ := hy
     interval_cases y
     . apply Int.not_dvd_of_exists_lt_and_lt at h3
-      exact h3.elim
+      contradiction
       use 3; constructor <;> numbers
     . apply Int.not_dvd_of_exists_lt_and_lt at h3
-      exact h3.elim
+      contradiction
       use 3; constructor <;> numbers
     . numbers

@@ -8,13 +8,13 @@ math2001_init
 
 open Int
 
-
+-- Example 4.5.1
 example : ¬ (∀ x : ℝ, x ^ 2 ≥ x) := by
   intro h
   have : 0.5 ^ 2 ≥ 0.5 := h 0.5
   numbers at this
 
-
+-- Example 4.5.2
 example : ¬ 3 ∣ 13 := by
   intro H
   obtain ⟨k, hk⟩ := H
@@ -23,8 +23,13 @@ example : ¬ 3 ∣ 13 := by
     calc 13 = 3 * k := hk
       _ ≤ 3 * 4 := by rel [h4]
     numbers at h
-  · sorry
+  · have h := calc
+      15 = 3 * 5 := by numbers
+      _ ≤ 3 * k := by rel [h5]
+      _ = 13 := by rw [hk]
+    numbers at h
 
+-- Example 4.5.3
 example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
   intro h
   obtain ⟨hx, hy⟩ := h
@@ -33,10 +38,22 @@ example {x y : ℝ} (h : x + y = 0) : ¬(x > 0 ∧ y > 0) := by
     _ > 0 := by extra
   numbers at H
 
-
+-- Example 4.5.4
 example : ¬ (∃ n : ℕ, n ^ 2 = 2) := by
-  sorry
+  intro hn
+  obtain ⟨n, hn⟩ := hn
+  have := le_or_succ_le n 1
+  obtain h | h := this
+  . interval_cases n
+    . numbers at hn
+    . numbers at hn
+  . have := calc
+      2 = n ^ 2 := by rw [hn]
+      _ ≥ 2 ^ 2 := by rel [h]
+      _ > 2 := by numbers
+    numbers at this
 
+-- Examples 4.5.5
 example (n : ℤ) : Int.Even n ↔ ¬ Int.Odd n := by
   constructor
   · intro h1 h2
@@ -51,10 +68,23 @@ example (n : ℤ) : Int.Even n ↔ ¬ Int.Odd n := by
     · apply h1
     · contradiction
 
-
 example (n : ℤ) : Int.Odd n ↔ ¬ Int.Even n := by
-  sorry
+  constructor
+  . intro h1 h2
+    rw [Int.odd_iff_modEq] at h1
+    rw [Int.even_iff_modEq] at h2
+    have h := calc
+      1 ≡ n [ZMOD 2] := by rel [h1]
+      _ ≡ 0 [ZMOD 2] := h2
+    numbers at h
+  . intro h
+    rw [Int.even_iff_modEq] at h
+    mod_cases n % 2
+    . contradiction
+    . rw [Int.odd_iff_modEq]
+      exact H
 
+-- Example 4.5.6
 example (n : ℤ) : ¬(n ^ 2 ≡ 2 [ZMOD 3]) := by
   intro h
   mod_cases hn : n % 3
@@ -63,9 +93,21 @@ example (n : ℤ) : ¬(n ^ 2 ≡ 2 [ZMOD 3]) := by
       _ ≡ n ^ 2 [ZMOD 3] := by rel [hn]
       _ ≡ 2 [ZMOD 3] := by rel [h]
     numbers at h -- contradiction!
-  · sorry
-  · sorry
+  · have : n ^ 2 ≡ 1 ^ 2 [ZMOD 3] := by apply Int.ModEq.pow; exact hn;
+    have : 1 ≡ 2 [ZMOD 3] := calc
+      1 = 1 ^ 2 := by numbers
+      _ ≡ n ^ 2 [ZMOD 3] := by rel [this]
+      _ ≡ 2 [ZMOD 3] := h
+    numbers at this
+  · have : n ^ 2 ≡ 2 ^ 2 [ZMOD 3] := by apply Int.ModEq.pow at hn; exact hn
+    have := calc
+      2 ≡ n ^ 2 [ZMOD 3] := by rel [h]
+      _ ≡ 2 ^ 2 [ZMOD 3] := by rel [this]
+      _ = 1 * 3 + 1 := by numbers
+      _ ≡ 1 [ZMOD 3] := by extra
+    numbers at this
 
+-- Example 4.5.7
 example {p : ℕ} (k l : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hkl : p = k * l) :
     ¬(Prime p) := by
   have hk : k ∣ p
@@ -78,7 +120,7 @@ example {p : ℕ} (k l : ℕ) (hk1 : k ≠ 1) (hkp : k ≠ p) (hkl : p = k * l) 
   · contradiction
   · contradiction
 
-
+-- Example 4.5.8
 example (a b : ℤ) (h : ∃ q, b * q < a ∧ a < b * (q + 1)) : ¬b ∣ a := by
   intro H
   obtain ⟨k, hk⟩ := H
@@ -93,6 +135,7 @@ example (a b : ℤ) (h : ∃ q, b * q < a ∧ a < b * (q + 1)) : ¬b ∣ a := by
   cancel b at h1
   sorry
 
+-- Examples 4.5.9
 example {p : ℕ} (hp : 2 ≤ p)  (T : ℕ) (hTp : p < T ^ 2)
     (H : ∀ (m : ℕ), 1 < m → m < T → ¬ (m ∣ p)) :
     Prime p := by
@@ -114,7 +157,6 @@ example {p : ℕ} (hp : 2 ≤ p)  (T : ℕ) (hTp : p < T ^ 2)
   have : ¬ l ∣ p := H l hl1 hl2
   contradiction
 
-
 example : Prime 79 := by
   apply better_prime_test (T := 9)
   · numbers
@@ -133,8 +175,7 @@ example : Prime 79 := by
   · sorry
   · sorry
 
-/-! # Exercises -/
-
+-- Examples 4.5.10
 
 example : ¬ (∃ t : ℝ, t ≤ 4 ∧ t ≥ 5) := by
   sorry
