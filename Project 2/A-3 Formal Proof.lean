@@ -15,7 +15,10 @@ lemma h2 {n : ℕ} : 2 * n - n = n := calc
 
 lemma h3 {n : ℕ} : 2 * (n + 1) = 2 * n + 2 := by ring
 
-lemma h4 {n : ℕ} : (n + 1) * (n.factorial * n.factorial) ∣ 2 * ((2 * n + 1) * (2 * n).factorial) := by sorry
+lemma h4 {n : ℕ} : (n + 1) * (n.factorial * n.factorial) ∣ 2 * ((2 * n + 1) * (2 * n).factorial) := by
+  simple_induction n with k
+  . sorry
+  . sorry
 
 lemma h5 {n : ℕ} : (n + 1) ^ 2 * Nat.factorial n ^ 2 * Nat.factorial n ^ 2 ∣ 4 * (2 * n + 1) ^ 2 * Nat.factorial (2 * n) ^ 2 := by sorry
 
@@ -26,6 +29,8 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
       * (3 * (n + 1) + 1) := by rw [Nat.choose_eq_factorial_div_factorial]; exact h1
 
   _ = ((2 * n + 2).factorial / ((n + 1).factorial * (n + 1).factorial)) ^ 2 * (3 * n + 4) := by rw [h2, h3]; ring
+
+  -- If I were to lift to the rationals, this is probably where I would do it, so that I can change the division to Rat.div while they're still equivalent.
 
   _ = ((2 * n + 2) * (2 * n + 1).factorial / ((n + 1).factorial * (n + 1).factorial)) ^ 2 * (3 * n + 4) := by
         rw [Nat.factorial_succ]
@@ -96,6 +101,8 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).factorial / (n.factorial * (2 * n - n).factorial)) ^ 2 := by rw [Nat.div_pow]; sorry
 
+  -- If I had lifted to the rationals, here I would have to change the factorial terms back to naturals and switch the corresponding Rat.div to Nat.div so that I can perform the following step of rewriting this as a binomial coefficient.
+
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).choose n) ^ 2 := by rw [←Nat.choose_eq_factorial_div_factorial]; exact h1
 
@@ -128,7 +135,7 @@ theorem a3 {n : ℕ} : ((2 * n).choose n) ^ 2 * (3 * n + 1) ≤ 4 ^ (2 * n) := b
         + 4 * k / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by extra
 
       _ = (48 * k ^ 3 + 112 * k ^ 2 + 80 * k + 16) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by sorry
-          -- This result cannot be proven with Nat.div, since it is literally false for most values of k. Of course, this works under Rat.div, since it is actually true for rationals.
+          -- This result cannot be proven with Nat.div, since it is literally false for nonzero values of k. However, if I had lifted to the rationals and switched this to Rat.div earlier, it is easily provable.
 
       _ = 4 * 4 * (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1)
           * 4 ^ (2 * k) := by ring
