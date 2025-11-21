@@ -6,7 +6,6 @@ import Mathlib.Algebra.BigOperators.Ring
 import Mathlib.Algebra.BigOperators.Intervals
 import Init.Data.Nat
 import Library.Basic
-import Library.Tactic.ModEq
 
 open BigOperators
 
@@ -20,28 +19,15 @@ lemma h2 {n : ℕ} : 2 * n - n = n := calc
 
 lemma h3 {n : ℕ} : 2 * (n + 1) = 2 * n + 2 := by ring
 
-lemma h4 {n : ℕ} : n.factorial ^ 2 * n.factorial ^ 2 ∣ (2 * n).factorial ^ 2 := by
-  have : n.factorial ^ 2 * n.factorial ^ 2 = (n.factorial * n.factorial) ^ 2 := by rw [Nat.mul_pow]
-  rw [this]
-  apply pow_dvd_pow_of_dvd
-  have : (2 * n).factorial = n.factorial * ∏ i in Finset.Ico n (2 * n), (i + 1) := by
-    calc
-      (2 * n).factorial = ∏ i in Finset.range (2 * n), (i + 1) := by rw [Finset.prod_range_add_one_eq_factorial]
-      _ = ∏ i in Finset.Ico 0 (2 * n), (i + 1) := by rw [Finset.range_eq_Ico]
-      _ = (∏ i in Finset.Ico 0 n, (i + 1)) * ∏ i in Finset.Ico n (2 * n), (i + 1) := by
-            rw [Finset.prod_Ico_consecutive]; extra; exact h1
-      _ = (∏ i in Finset.range n, (i + 1)) * ∏ i in Finset.Ico n (2 * n), (i + 1) := by rw [Finset.range_eq_Ico];
-      _ = n.factorial * ∏ i in Finset.Ico n (2 * n), (i + 1) := by rw [Finset.prod_range_add_one_eq_factorial]
+lemma h4 {n : ℕ} : 12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 ≤ 12 * n ^ 3 + 28 * n ^ 2 + 20 * n + 4 := calc
+  12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 ≤ 12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 + n := by extra
+  _ = 12 * n ^ 3 + 28 * n ^ 2 + 20 * n + 4 := by ring
 
-
-
-
-
-lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n + 1) + 1) = ((4 * (2 * n + 1) ^ 2 * (3 * n + 4)) / ((n + 1) ^ 2 * (3 * n + 1))) * (((2 * n).choose n) ^ 2 * (3 * n + 1)) := by calc
+lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n + 1) + 1) = ((4 * (2 * n + 1) ^ 2 * (3 * n + 4)) / ((n + 1) ^ 2 * (3 * n + 1))) * (((2 * n).choose n) ^ 2 * (3 * n + 1)) := calc
 
   ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n + 1) + 1)
-  = ((2 * (n + 1)).factorial / ((n + 1).factorial * (2 * (n + 1) - (n + 1)).factorial)) ^ 2
-    * (3 * (n + 1) + 1) := by rw [Nat.choose_eq_factorial_div_factorial]; exact h1
+    = ((2 * (n + 1)).factorial / ((n + 1).factorial * (2 * (n + 1) - (n + 1)).factorial)) ^ 2
+      * (3 * (n + 1) + 1) := by rw [Nat.choose_eq_factorial_div_factorial]; exact h1
 
   _ = ((2 * n + 2).factorial / ((n + 1).factorial * (n + 1).factorial)) ^ 2 * (3 * n + 4) := by rw [h2, h3]; ring
 
@@ -108,7 +94,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).factorial ^ 2 / (n.factorial ^ 2 * n.factorial ^ 2)) := by
-        rw [Nat.mul_div_mul_comm_of_dvd_dvd]; sorry; exact h4
+        rw [Nat.mul_div_mul_comm_of_dvd_dvd]; sorry; sorry
       -- The corresponding Rat.div result is true and provable.
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
@@ -142,20 +128,15 @@ theorem a3 {n : ℕ} : ((2 * n).choose n) ^ 2 * (3 * n + 1) ≤ 4 ^ (2 * n) := b
   simple_induction n with k IH
   . dsimp [Nat.choose]; numbers
   . calc
-
       ((2 * (k + 1)).choose (k + 1)) ^ 2 * (3 * (k + 1) + 1)
-      = ((4 * (2 * k + 1) ^ 2 * (3 * k + 4)) / ((k + 1) ^ 2 * (3 * k + 1)))
-        * (((2 * k).choose k) ^ 2 * (3 * k + 1)) := by rw [bulkCalculation]
+        = ((4 * (2 * k + 1) ^ 2 * (3 * k + 4)) / ((k + 1) ^ 2 * (3 * k + 1)))
+          * (((2 * k).choose k) ^ 2 * (3 * k + 1)) := by rw [bulkCalculation]
 
       _ ≤ ((4 * (2 * k + 1) ^ 2 * (3 * k + 4)) / ((k + 1) ^ 2 * (3 * k + 1))) * 4 ^ (2 * k) := by rel [IH]
 
-      _ = (48 * k ^ 3 + 112 * k ^ 2 + 76 * k + 16) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by ring
+      _ = 4 * (12 * k ^ 3 + 28 * k ^ 2 + 19 * k + 4) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by ring
 
-      _ ≤ (48 * k ^ 3 + 112 * k ^ 2 + 76 * k + 16) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k)
-        + 4 * k / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by extra
-
-      _ = (48 * k ^ 3 + 112 * k ^ 2 + 80 * k + 16) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by sorry
-          -- The corresponding Rat.div result is true and provable.
+      _ ≤ 4 * (12 * k ^ 3 + 28 * k ^ 2 + 20 * k + 4) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) * 4 ^ (2 * k) := by rel [h4]
 
       _ = 4 * 4 * (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1) / (3 * k ^ 3 + 7 * k ^ 2 + 5 * k + 1)
           * 4 ^ (2 * k) := by ring
