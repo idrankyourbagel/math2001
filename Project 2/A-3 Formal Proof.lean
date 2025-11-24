@@ -9,20 +9,19 @@ import Library.Basic
 
 open BigOperators
 
+-- The lemmas below are trivial results which nonetheless must be shown as intermediate results either as preconditions to apply other lemmas or in order to rewrite arguments of functions, as that behaves slightly differently than rewriting the same expression on its own. For example, (2 * n - n).factorial does not simplify to n.factorial by ring.
 lemma h1 {n : ℕ} : n ≤ 2 * n := calc
   n ≤ n + n := by extra
   _ = _ := by ring
-
 lemma h2 {n : ℕ} : 2 * n - n = n := calc
   2 * n - n = n + n - n := by ring
   _ = n := by rw [Nat.add_sub_cancel]
-
 lemma h3 {n : ℕ} : 2 * (n + 1) = 2 * n + 2 := by ring
-
 lemma h4 {n : ℕ} : 12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 ≤ 12 * n ^ 3 + 28 * n ^ 2 + 20 * n + 4 := calc
   12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 ≤ 12 * n ^ 3 + 28 * n ^ 2 + 19 * n + 4 + n := by extra
   _ = 12 * n ^ 3 + 28 * n ^ 2 + 20 * n + 4 := by ring
 
+-- The below calculation corresponds to Lemma 1 in the informal proof.
 lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n + 1) + 1) = ((4 * (2 * n + 1) ^ 2 * (3 * n + 4)) / ((n + 1) ^ 2 * (3 * n + 1))) * (((2 * n).choose n) ^ 2 * (3 * n + 1)) := calc
 
   ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n + 1) + 1)
@@ -122,8 +121,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
   _ = ((4 * (2 * n + 1) ^ 2 * (3 * n + 4)) / ((n + 1) ^ 2 * (3 * n + 1)))
       * (((2 * n).choose n) ^ 2 * (3 * n + 1)) := by ring
 
-
-
+-- The below calculation corresponds to the main body of the informal proof.
 theorem a3 {n : ℕ} : ((2 * n).choose n) ^ 2 * (3 * n + 1) ≤ 4 ^ (2 * n) := by
   simple_induction n with k IH
   . dsimp [Nat.choose]; numbers
