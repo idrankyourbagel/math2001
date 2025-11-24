@@ -9,7 +9,7 @@ import Library.Basic
 
 open BigOperators
 
--- The lemmas below are trivial results which nonetheless must be shown as intermediate results either as preconditions to apply other lemmas in bulkCalculation or in order to rewrite arguments of functions, as that behaves slightly differently than rewriting the same expression on its own. For example, (2 * n - n).factorial does not simplify to n.factorial by ring, so I must establish (2 * n - n) = n as a lemma and rewrite using this lemma.
+-- The lemmas below are trivial results which nonetheless must be shown as intermediate results either as preconditions to apply other lemmas in bulkCalculation or in order to rewrite arguments of functions, as that behaves slightly differently than rewriting the same expression on its own. For example, (2 * n - n).factorial does not simplify to n.factorial by ring or ring_nf, so I must establish (2 * n - n) = n as a lemma and rewrite using this lemma.
 lemma h1 {n : ℕ} : n ≤ 2 * n := calc
   n ≤ n + n := by extra
   _ = _ := by ring
