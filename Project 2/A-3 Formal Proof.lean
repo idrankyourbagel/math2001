@@ -9,7 +9,7 @@ import Library.Basic
 
 open BigOperators
 
--- The lemmas below are trivial results which nonetheless must be shown as intermediate results either as preconditions to apply other lemmas or in order to rewrite arguments of functions, as that behaves slightly differently than rewriting the same expression on its own. For example, (2 * n - n).factorial does not simplify to n.factorial by ring.
+-- The lemmas below are trivial results which nonetheless must be shown as intermediate results either as preconditions to apply other lemmas in bulkCalculation or in order to rewrite arguments of functions, as that behaves slightly differently than rewriting the same expression on its own. For example, (2 * n - n).factorial does not simplify to n.factorial by ring, so I must establish (2 * n - n) = n as a lemma and rewrite using this lemma.
 lemma h1 {n : ℕ} : n ≤ 2 * n := calc
   n ≤ n + n := by extra
   _ = _ := by ring
@@ -30,7 +30,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = ((2 * n + 2).factorial / ((n + 1).factorial * (n + 1).factorial)) ^ 2 * (3 * n + 4) := by rw [h2, h3]; ring
 
-  -- If I were to lift to the rationals, this is probably where I would do it, so that I can change the division to Rat.div while they're still equivalent.
+  -- If I were to lift to the rationals, this is probably where I would do it, so as to change the division to Rat.div while I still can (since it is a fact that Nat.div and Rat.div are equivalent in the current expression).
 
   _ = ((2 * n + 2) * (2 * n + 1).factorial / ((n + 1).factorial * (n + 1).factorial)) ^ 2 * (3 * n + 4) := by
         rw [Nat.factorial_succ]
@@ -52,7 +52,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = (2 * ((2 * n + 1) * (2 * n).factorial)) ^ 2 / ((n + 1) * (n.factorial * n.factorial)) ^ 2
       * (3 * n + 4) := by rw [Nat.div_pow]; sorry
-      -- This result is not provable, since it is literally false for some values of n. However, if I had lifted to the rationals earlier, the corresponding Rat.div result is true and easily provable.
+        -- This result is not provable, since it is literally false for some values of n under Nat.div. However, if I had lifted to the rationals earlier, the corresponding Rat.div result is true and easily provable.
 
   _ = (2 ^ 2 * ((2 * n + 1) * (2 * n).factorial) ^ 2) / ((n + 1) * (n.factorial * n.factorial)) ^ 2
       * (3 * n + 4) := by rw [Nat.mul_pow]
@@ -75,7 +75,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
   _ = (4 * (2 * n + 1) ^ 2 * (2 * n).factorial ^ 2) * (3 * n + 1)
       / (((n + 1) ^ 2 * n.factorial ^ 2 * n.factorial ^ 2) * (3 * n + 1))
       * (3 * n + 4) := by rw [←Nat.mul_div_mul_comm_of_dvd_dvd]; sorry; use 1; ring
-      -- The corresponding Rat.div result is true and provable.
+        -- False under Nat.div, but the corresponding Rat.div result is true and provable.
 
   _ = ((4 * (2 * n + 1) ^ 2 * (2 * n).factorial ^ 2) * (3 * n + 1)
       / (((n + 1) ^ 2 * n.factorial ^ 2 * n.factorial ^ 2) * (3 * n + 1)))
@@ -86,7 +86,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (2 * n).factorial ^ 2 * (3 * n + 1))
       / ((n + 1) ^ 2 * n.factorial ^ 2 * n.factorial ^ 2 * (3 * n + 1)) := by rw [←Nat.mul_div_assoc]; sorry
-      -- The corresponding Rat.div result is true and provable.
+        -- False under Nat.div, but the corresponding Rat.div result is true and provable.
 
   _ = ((3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1))) * ((2 * n).factorial ^ 2)
       / (((n + 1) ^ 2 * (3 * n + 1)) * (n.factorial ^ 2 * n.factorial ^ 2)) := by ring
@@ -94,7 +94,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).factorial ^ 2 / (n.factorial ^ 2 * n.factorial ^ 2)) := by
         rw [Nat.mul_div_mul_comm_of_dvd_dvd]; sorry; sorry
-      -- The corresponding Rat.div result is true and provable.
+      -- False under Nat.div, but the corresponding Rat.div result is true and provable.
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).factorial ^ 2 / (n.factorial ^ 2 * (2 * n - n).factorial ^ 2)) := by rw [h2]
@@ -104,9 +104,9 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).factorial / (n.factorial * (2 * n - n).factorial)) ^ 2 := by rw [Nat.div_pow]; sorry
-      -- The corresponding Rat.div result is true and provable.
+      -- False under Nat.div, but the corresponding Rat.div result is true and provable.
 
-  -- If I had lifted to the rationals, here I would have to change the factorial terms back to naturals and switch the corresponding Rat.div to Nat.div so that I can perform the following step of rewriting this as a binomial coefficient.
+  -- If I had lifted to the rationals, here I would have to change the factorial terms back to naturals and switch the corresponding Rat.div to Nat.div (but leave the other division as Rat.div) so that I can perform the following step of rewriting this as a binomial coefficient.
 
   _ = (3 * n + 4) * (4 * (2 * n + 1) ^ 2 * (3 * n + 1)) / ((n + 1) ^ 2 * (3 * n + 1))
       * ((2 * n).choose n) ^ 2 := by rw [←Nat.choose_eq_factorial_div_factorial]; exact h1
@@ -116,7 +116,7 @@ lemma bulkCalculation {n : ℕ} : ((2 * (n + 1)).choose (n + 1)) ^ 2 * (3 * (n +
 
   _ = (3 * n + 1) * ((4 * (3 * n + 4) * (2 * n + 1) ^ 2) / ((n + 1) ^ 2 * (3 * n + 1)))
       * ((2 * n).choose n) ^ 2 := by rw [Nat.mul_div_assoc]; sorry
-      -- The corresponding Rat.div result is true and provable.
+      -- False under Nat.div, but the corresponding Rat.div result is true and provable.
 
   _ = ((4 * (2 * n + 1) ^ 2 * (3 * n + 4)) / ((n + 1) ^ 2 * (3 * n + 1)))
       * (((2 * n).choose n) ^ 2 * (3 * n + 1)) := by ring
